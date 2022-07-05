@@ -10,35 +10,13 @@ public class HandInteraction : MonoBehaviour
     public Transform holdObjPoint;
     public List<string> ignoreTags;
     public float activeThresold;
+    public float forcePower;
 
     private bool bIsActive;
     private GameObject selectedObj;
     private Vector3 lastPosition;
     private Vector3 forceDir;
-    [SerializeField]private float forcePower;
-
-    private void Update()
-    {
-        forceDir = this.transform.position - lastPosition;
-
-        UpdateGrabObj();
-
-        lastPosition = this.transform.position;
-    }
-
-    private void UpdateGrabObj()
-    {
-       if(OVRInput.Get(inputActive) >= activeThresold && !bIsActive)
-        {
-            OnGrabObject();
-            bIsActive = true;
-        }
-       else if(OVRInput.Get(inputActive) < activeThresold && !bIsActive)
-        {
-            OnReleaseObject();
-            bIsActive = false;
-        }
-    }
+   
 
     public void OnGrabObject()
     {
@@ -66,6 +44,31 @@ public class HandInteraction : MonoBehaviour
         rigid.AddForce(forceDir * forcePower, ForceMode.Impulse);
     }
 
+    private void Update()
+    {
+        forceDir = this.transform.position - lastPosition;
+
+        UpdateGrabObj();
+
+        lastPosition = this.transform.position;
+    }
+
+    private void UpdateGrabObj()
+    {
+        if (OVRInput.Get(inputActive) >= activeThresold && !bIsActive)
+        {
+            Debug.Log("OnGrab");
+            OnGrabObject();
+            bIsActive = true;
+        }
+        else if (OVRInput.Get(inputActive) < activeThresold && bIsActive)
+        {
+            Debug.Log("OnRelease");
+            OnReleaseObject();
+            bIsActive = false;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         foreach(var tag in ignoreTags)
@@ -75,6 +78,7 @@ public class HandInteraction : MonoBehaviour
                 return;
             }
         }
+
         selectedObj = other.gameObject;
     }    
 

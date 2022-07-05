@@ -6,8 +6,9 @@ TagManager:
   tags:
   - Hand
   - Cube
-  - VrHand
   - Floor
+  - Sphere
+  - VRHand
   layers:
   - Default
   - TransparentFX
